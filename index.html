@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>SkillMap AI - Adaptive Skill Readiness</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">S</div><div><h2>SkillMap AI</h2><span>Career Intelligence</span></div></div>
+    <nav>
+      <button class="nav-item active" data-page="dashboard" onclick="showPage('dashboard',this)">⌂ <span>Dashboard</span></button>
+      <button class="nav-item" data-page="profile" onclick="showPage('profile',this)">◉ <span>Student Profile</span></button>
+      <button class="nav-item" data-page="assessment" onclick="showPage('assessment',this)">◈ <span>Skill Assessment</span></button>
+      <button class="nav-item" data-page="career" onclick="showPage('career',this)">◎ <span>Career Roles</span></button>
+      <button class="nav-item" data-page="roadmap" onclick="showPage('roadmap',this)">◇ <span>My Roadmap</span></button>
+      <button class="nav-item" data-page="projects" onclick="showPage('projects',this)">▣ <span>Projects</span></button>
+      <button class="nav-item" data-page="progress" onclick="showPage('progress',this)">◒ <span>Progress</span></button>
+      <button class="nav-item" data-page="assistant" onclick="showPage('assistant',this)">✦ <span>AI Career Assistant</span></button>
+    </nav>
+    <div class="side-coach"><div class="mini-ai">AI</div><div><strong>AI Career Coach</strong><small>Personalized guidance</small></div></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div><p class="eyebrow">Welcome back 👋</p><h1 id="pageTitle">Skill Readiness Dashboard</h1></div>
+      <div class="top-profile"><div class="avatar">LA</div><div><strong id="topStudentName">Student</strong><small>Learner</small></div></div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="page active-page">
+      <div class="hero">
+        <div class="hero-copy">
+          <span class="pill">ADAPTIVE SKILL-READINESS MAPPING</span>
+          <h2>Understand your skills.<br>Build your <span>career roadmap.</span></h2>
+          <p>Compare your self-rated skills with resume/certificate evidence, identify role-specific gaps, learn with a time-based roadmap, and validate each completed skill with an assessment.</p>
+          <button class="primary" onclick="showPageById('profile')">Build My Student Profile →</button>
+        </div>
+        <div class="score-ring"><div><strong id="heroScore">0%</strong><small>Readiness</small></div></div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat"><div class="stat-icon violet">◎</div><div><small>Target Role</small><strong id="dashboardRole">Data Engineer</strong></div></div>
+        <div class="stat"><div class="stat-icon green">✓</div><div><small>Skills Matched</small><strong id="matchedSkills">0 / 8</strong></div></div>
+        <div class="stat"><div class="stat-icon orange">!</div><div><small>Skill Gaps</small><strong id="gapSkills">0</strong></div></div>
+        <div class="stat"><div class="stat-icon blue">↗</div><div><small>Progress</small><strong id="progressValue">0%</strong></div></div>
+      </div>
+
+      <div class="two-col">
+        <div class="panel"><div class="panel-head"><div><h3>Skill Gap Overview</h3><p>Current competency vs role requirement</p></div><button class="link-btn" onclick="showPageById('assessment')">View all →</button></div><div id="dashboardSkills"></div></div>
+        <div class="panel"><div class="panel-head"><div><h3>Next Best Step</h3><p>Based on current gaps and time</p></div><span class="ai-badge">AI</span></div><div class="recommend"><div class="idea">💡</div><h3 id="nextSkill">Complete your assessment</h3><p id="nextSkillText">Rate your skills to generate your personalized next step.</p><button class="secondary" onclick="showPageById('roadmap')">Open Roadmap →</button></div></div>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section id="profile" class="page">
+      <div class="section-head"><div><h2>Student Profile & Evidence</h2><p>Upload documents and compare them with your self-rated skills.</p></div><span class="ai-badge">AI EVIDENCE</span></div>
+      <div class="two-col profile-grid">
+        <div class="panel">
+          <h3>Student Information</h3>
+          <div class="form-grid">
+            <label>Name<input id="studentName" type="text" value="Lathika"></label>
+            <label>Target Career<select id="profileCareer" onchange="syncCareerFromProfile()"></select></label>
+          </div>
+          <h3 class="subhead">Resume</h3>
+          <label class="upload"><span class="upload-icon">📄</span><span><strong>Upload Resume</strong><small>PDF, TXT, DOCX, PNG/JPG</small></span><b>Browse</b><input id="resumeFile" type="file" accept=".pdf,.txt,.docx,.png,.jpg,.jpeg" onchange="handleResumeFile(event)"></label>
+          <h3 class="subhead">Certificates</h3>
+          <label class="upload"><span class="upload-icon">🏆</span><span><strong>Upload Certificates</strong><small>One or more files</small></span><b>Browse</b><input id="certificateFiles" type="file" multiple accept=".pdf,.txt,.docx,.png,.jpg,.jpeg" onchange="handleCertificateFiles(event)"></label>
+          <div id="fileList" class="file-list"></div>
+          <button id="analyzeBtn" class="primary full" onclick="analyzeEvidence()">Analyze Resume & Certificates →</button>
+          <button class="secondary full" onclick="showPageById('assessment')">Rate My Current Skills →</button>
+          <p class="hint">Resume/certificate analysis runs locally in the browser and does not use your Gemini API key. The Gemini key is used only by AI Career Assistant.</p>
+        </div>
+        <div class="panel"><div class="panel-head"><div><h3>Skill Evidence Comparison</h3><p>Self rating + document evidence → final skill profile</p></div><span class="ai-badge">LIVE</span></div><div id="comparison" class="comparison-empty">Upload evidence and rate your skills to compare them here.</div></div>
+      </div>
+      <div class="panel"><div class="panel-head"><div><h3>Adaptive Flow</h3><p>Your roadmap changes when your evidence, rating, or assessment result changes.</p></div></div><div class="flow"><div><b>1</b><strong>Upload</strong><small>Resume + certificates</small></div><i>→</i><div><b>2</b><strong>Rate</strong><small>Self-assessment</small></div><i>→</i><div><b>3</b><strong>Compare</strong><small>Evidence vs rating</small></div><i>→</i><div><b>4</b><strong>Learn</strong><small>Timed roadmap</small></div><i>→</i><div><b>5</b><strong>Validate</strong><small>Skill assessment</small></div></div></div>
+    </section>
+
+    <!-- ASSESSMENT -->
+    <section id="assessment" class="page">
+      <div class="section-head"><div><h2>Skill Assessment</h2><p>Rate your current level. After learning a roadmap skill, take the validation quiz to increase the level.</p></div><span class="step-badge">CURRENT PROFILE</span></div>
+      <div class="two-col profile-grid">
+        <div class="panel"><h3>Target Career</h3><select id="careerSelect" class="big-select" onchange="changeCareer()"></select><h3 class="subhead">Rate your current skills</h3><div id="assessmentSkills"></div><button class="primary full" onclick="analyzeSkills()">Update Readiness →</button></div>
+        <div class="panel dark-panel"><div class="idea">🔍</div><h3>How the score works</h3><p>Readiness is computed deterministically from your competency levels against the selected role requirements.</p><div class="check">✓ Current level</div><div class="check">✓ Required level</div><div class="check">✓ Gap magnitude</div><div class="check">✓ Evidence source</div><div class="check">✓ Assessment results</div></div>
+      </div>
+    </section>
+
+    <!-- CAREERS -->
+    <section id="career" class="page">
+      <div class="section-head"><div><h2>Career Roles</h2><p>Choose a role to see its required skills and estimated learning time.</p></div></div>
+      <div id="careerCards" class="career-grid"></div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section id="roadmap" class="page">
+      <div class="section-head"><div><h2>My Adaptive Roadmap</h2><p>Each skill shows the estimated learning time, learning status, and quiz validation step.</p></div><span class="ai-badge">ADAPTIVE</span></div>
+      <div class="roadmap-summary"><div><small>Readiness</small><strong id="roadmapReadiness">0%</strong></div><div><small>Remaining gaps</small><strong id="roadmapGapCount">0</strong></div><div><small>Estimated remaining learning</small><strong id="roadmapTotalTime">0 weeks</strong></div></div>
+      <div id="roadmapSteps" class="roadmap"></div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" class="page">
+      <div class="section-head"><div><h2>Skill-Building Projects</h2><p>Projects are matched to your current role gaps.</p></div></div>
+      <div id="projectCards" class="project-grid"></div>
+    </section>
+
+    <!-- PROGRESS -->
+    <section id="progress" class="page">
+      <div class="section-head"><div><h2>Progress Tracking</h2><p>See how your competency profile changes after projects and assessments.</p></div></div>
+      <div class="two-col profile-grid"><div class="panel center"><div id="progressRing" class="large-ring"><strong id="progressCircle">0%</strong></div><h3 id="progressMessage">Start your skill journey.</h3></div><div class="panel"><div class="panel-head"><div><h3>Competency Progress</h3><p>Current level against required level</p></div></div><div id="progressSkills"></div></div></div>
+    </section>
+
+    <!-- AI ASSISTANT -->
+    <section id="assistant" class="page">
+      <div class="section-head"><div><h2>AI Career Assistant</h2><p>Ask about your current skills, gaps, roadmap, projects, and assessments.</p></div><span class="ai-badge">GEMINI</span></div>
+      <div class="two-col assistant-grid"><div class="panel chat-panel"><div id="chatMessages" class="chat-messages"><div class="message bot"><b>AI</b><p>Hi! I can explain your SkillMap profile and suggest what to work on next.</p></div></div><div class="chips"><button onclick="usePrompt('What should I learn next?')">What should I learn next?</button><button onclick="usePrompt('Explain my biggest skill gaps.')">Explain my gaps</button><button onclick="usePrompt('Suggest a project for my next skill.')">Suggest a project</button></div><div class="chat-input"><textarea id="chatInput" rows="2" placeholder="Ask your career question..." onkeydown="handleChatKey(event)"></textarea><button id="sendChat" class="primary" onclick="sendChat()">Send →</button></div></div><div class="panel"><div class="panel-head"><div><h3>AI Context</h3><p>Data used to personalize answers</p></div></div><div id="aiContext"></div></div></div>
+    </section>
+  </main>
+
+  <!-- ASSESSMENT MODAL -->
+  <div id="assessmentModal" class="modal" hidden>
+    <div class="modal-backdrop" onclick="closeAssessment()"></div>
+    <div class="modal-card"><div class="modal-head"><div><span class="ai-badge">SKILL CHECK</span><h2 id="quizTitle">Skill Assessment</h2><p id="quizSubtitle">Validate the skill.</p></div><button class="close" onclick="closeAssessment()">×</button></div><div id="quizBody"></div><div id="quizResult" hidden></div><div class="modal-actions"><button class="secondary" onclick="closeAssessment()">Close</button><button id="submitQuiz" class="primary" onclick="submitQuiz()">Submit Assessment →</button></div></div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <!-- Local-only document parsing helpers. No API key is required for resume/certificate analysis. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.9.0/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
